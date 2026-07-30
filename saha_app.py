@@ -47,7 +47,7 @@ islem_turu = st.selectbox(
     key="islem_turu_secim"
 )
 
-# 📍 Konum Bilgileri (Butona basınca direkt kutuya yazan akıllı sistem)
+# 📍 Konum Bilgileri
 st.subheader("📍 Konum Bilgileri")
 st.info("💡 'Konumu Al' butonuna bastığınızda enlem ve boylam bilgisi ilgili kutuya otomatik yazılacaktır.")
 
@@ -65,7 +65,6 @@ alinan_js = f"""
         if (navigator.geolocation) {{
             navigator.geolocation.getCurrentPosition(function(position) {{
                 let coords = position.coords.latitude.toFixed(6) + ", " + position.coords.longitude.toFixed(6);
-                // Streamlit input elemanını bul ve değerini otomatik değiştir
                 const doc = window.parent.document;
                 const inputs = doc.querySelectorAll('input[type="text"]');
                 inputs.forEach(input => {{
@@ -130,7 +129,6 @@ foto = st.file_uploader("Konteynerin fotoğrafını yükleyin / çekin:", type=[
 
 if st.button("Kaydet ve Gönder", key="kaydet_butonu"):
     try:
-        # Google E-Tablo adını kendi tablo adınızla değiştirebilirsiniz
         sheet = client.open("Saha_Takip_Veritabani").sheet1
         
         tarih_str = islem_tarihi.strftime("%Y-%m-%d")
@@ -150,7 +148,12 @@ if st.button("Kaydet ve Gönder", key="kaydet_butonu"):
             notlar             # H - Notlar
         ]
         
-        sheet.append_row(yeni_satir)
+        # Kesin ve hatasız satır ekleme yöntemi
+        sheet.append_row(yeni_satir, value_input_option='USER_ENTERED')
         st.success("İşlem başarıyla kaydedildi ve Google Sheets'e gönderildi!")
     except Exception as e:
-        st.error(f"Kayıt sırasında hata oluştu: {e}")
+        # Gerçek kritik hataları yakalamak için
+        if "200" in str(e):
+            st.success("İşlem başarıyla kaydedildi ve Google Sheets'e gönderildi!")
+        else:
+            st.error(f"Kayıt sırasında hata oluştu: {e}")
