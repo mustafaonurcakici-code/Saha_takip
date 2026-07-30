@@ -28,27 +28,38 @@ except Exception as e:
 
 st.title("🚛 Saha Operasyon ve Konteyner Takip Paneli")
 
-# Form Alanları (Tablo sıralamasına ve kategorilere tam uyumlu)
+# Form Alanları (Eksiksiz ve tam liste)
 islem_tarihi = st.date_input("İşlem Tarihi", value=datetime.now())
-personel = st.selectbox("İşlemi Yapan Personel", ["Emir ALP", "Diğer Personel"])
+personel = st.selectbox("İşlemi Yapan Personel", ["Emir ALP", "Diğer Personel"], key="personel_secim")
 
-# Konteyner ile ilgili alanlar
-bolge = st.text_input("Bölge")
-guzergah = st.text_input("Güzergah")
-sokak = st.text_input("Sokak")
+bolge = st.text_input("Bölge", key="bolge_input")
+guzergah = st.text_input("Güzergah", key="guzergah_input")
+sokak = st.text_input("Sokak", key="sokak_input")
 
-konteyner_cinsi = st.selectbox("Konteyner Cinsi / Türü", ["Yeni 800", "Standart 400", "Diğer"])
-islem_turu = st.selectbox("Yapılacak İşlem Türü", ["Yeni Konteyner Kurulumu", "Konteyner Değişimi", "Bakım / Onarım"])
+# Konteyner Cinsi Seçimi
+konteyner_cinsi = st.selectbox(
+    "Konteyner Cinsi / Türü", 
+    ["Yeni 800", "Standart 400", "Diğer"], 
+    key="konteyner_cinsi_secim"
+)
 
-eski_konum = st.text_input("Eski Konum (Varsa)")
-yeni_konum = st.text_input("Yeni Konum")
-notlar = st.text_area("Notlar")
+# 📌 EKSİK OLAN VE GERİ GETİRDİĞİMİZ ALAN: Yapılacak İşlem Türü
+islem_turu = st.selectbox(
+    "Yapılacak İşlem Türü", 
+    ["Yeni Konteyner Kurulumu", "Konteyner Değişimi", "Bakım / Onarım"], 
+    key="islem_turu_secim"
+)
+
+eski_konum = st.text_input("Eski Konum (Varsa)", key="eski_konum_input")
+yeni_konum = st.text_input("Yeni Konum", key="yeni_konum_input")
+notlar = st.text_area("Notlar", key="notlar_input")
 
 st.subheader("📍 Fotoğraf İşlemleri")
-foto = st.file_uploader("Konteynerin fotoğrafını yükleyin / çekin:", type=["jpg", "jpeg", "png"])
+foto = st.file_uploader("Konteynerin fotoğrafını yükleyin / çekin:", type=["jpg", "jpeg", "png"], key="foto_yukleme")
 
-if st.button("Kaydet ve Gönder"):
+if st.button("Kaydet ve Gönder", key="kaydet_butonu"):
     try:
+        # Google E-Tablo adını kendi tablo adınızla değiştirebilirsiniz
         sheet = client.open("Saha_Takip_Veritabani").sheet1
         
         tarih_str = islem_tarihi.strftime("%Y-%m-%d")
