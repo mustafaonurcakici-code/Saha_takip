@@ -149,12 +149,9 @@ if st.button("Kaydet ve Gönder", key="kaydet_butonu"):
             notlar             # H - Notlar
         ]
         
-        worksheet.append_row(yeni_satir, value_input_option='USER_ENTERED')
+        # 200 hatasını tetiklemeyen, toplu veri ekleme fonksiyonu (append_rows) kullanıyoruz
+        worksheet.append_rows([yeni_satir], value_input_option='USER_ENTERED')
         st.success("İşlem başarıyla kaydedildi ve Google Sheets'e gönderildi!")
         
     except Exception as e:
-        # 200 (Başarılı) kodunu hata olarak değil başarı olarak ele alıyoruz
-        if "200" in str(e):
-            st.success("İşlem başarıyla kaydedildi ve Google Sheets'e gönderildi!")
-        else:
-            st.error(f"Kayıt sırasında hata oluştu: {e}")
+        st.error(f"Kayıt sırasında hata oluştu: {e}")
