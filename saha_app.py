@@ -129,7 +129,11 @@ foto = st.file_uploader("Konteynerin fotoğrafını yükleyin / çekin:", type=[
 
 if st.button("Kaydet ve Gönder", key="kaydet_butonu"):
     try:
-        sheet = client.open("Saha_Takip_Veritabani").sheet1
+        # Google E-Tablo dosyanızın adı (Eğer tablonun adı farklıysa buradaki ismi tırnak içinde güncelleyebilirsiniz)
+        spreadsheet = client.open("Saha_Takip_Veritabani")
+        
+        # Tablo içindeki ilk sayfayı (sekme) güvenle seçiyoruz
+        worksheet = spreadsheet.get_worksheet(0)
         
         tarih_str = islem_tarihi.strftime("%Y-%m-%d")
         foto_adi = foto.name if foto is not None else "Fotoğraf Yok"
@@ -148,12 +152,9 @@ if st.button("Kaydet ve Gönder", key="kaydet_butonu"):
             notlar             # H - Notlar
         ]
         
-        # Kesin ve hatasız satır ekleme yöntemi
-        sheet.append_row(yeni_satir, value_input_option='USER_ENTERED')
+        # Google Sheets'e veriyi doğrudan işliyoruz
+        worksheet.append_row(yeni_satir, value_input_option='USER_ENTERED')
         st.success("İşlem başarıyla kaydedildi ve Google Sheets'e gönderildi!")
+        
     except Exception as e:
-        # Gerçek kritik hataları yakalamak için
-        if "200" in str(e):
-            st.success("İşlem başarıyla kaydedildi ve Google Sheets'e gönderildi!")
-        else:
-            st.error(f"Kayıt sırasında hata oluştu: {e}")
+        st.error(f"Kayıt sırasında hata oluştu: {e}")
