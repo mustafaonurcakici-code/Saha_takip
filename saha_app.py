@@ -2,7 +2,6 @@ import streamlit as st
 import gspread
 from google.oauth2 import service_account
 from datetime import datetime
-from streamlit_geolocation import streamlit_geolocation
 
 # Sayfa Yapılandırması
 st.set_page_config(page_title="Saha Operasyon ve Konteyner Takip Paneli", page_icon="🚛")
@@ -47,25 +46,10 @@ islem_turu = st.selectbox(
     key="islem_turu_secim"
 )
 
-# 📍 Konum Bilgileri (GPS Konum Alma Butonları)
+# 📍 Konum Bilgileri (Kararlı ve hatasız metin/adres girişi)
 st.subheader("📍 Konum Bilgileri")
-st.info("💡 Aşağıdaki butonlara basarak telefonunuzun anlık GPS konumunu ekleyebilirsiniz.")
-
-# Alınan Konum için GPS Bileşeni
-st.write("**Alınan Konteyner Noktası Konumu:**")
-alinan_loc = streamlit_geolocation(key='alinan_gps')
-alinan_nokta = ""
-if alinan_loc and 'latitude' in alinan_loc and alinan_loc['latitude'] is not None:
-    alinan_nokta = f"Enlem: {alinan_loc['latitude']}, Boylam: {alinan_loc['longitude']}"
-    st.success(f"Alınan Konum Alındı: {alinan_nokta}")
-
-# Bırakılan Konum için GPS Bileşeni
-st.write("**Bırakılan Konteyner Noktası Konumu:**")
-birakilan_loc = streamlit_geolocation(key='birakilan_gps')
-birakilan_nokta = ""
-if birakilan_loc and 'latitude' in birakilan_loc and birakilan_loc['latitude'] is not None:
-    birakilan_nokta = f"Enlem: {birakilan_loc['latitude']}, Boylam: {birakilan_loc['longitude']}"
-    st.success(f"Bırakılan Konum Alındı: {birakilan_nokta}")
+alinan_nokta = st.text_input("Alınan Konteyner Noktası (Adres / Konum Tarifi)", key="alinan_nokta_input")
+birakilan_nokta = st.text_input("Bırakılan Konteyner Noktası (Adres / Konum Tarifi)", key="birakilan_nokta_input")
 
 notlar = st.text_area("Notlar", key="notlar_input")
 
