@@ -46,10 +46,12 @@ islem_turu = st.selectbox(
     key="islem_turu_secim"
 )
 
-# 📍 Konum Bilgileri (Eski ve yeni konumlar kaldırıldı, sadece alınan/bırakılan kaldı)
+# 📍 Konum Bilgileri (GPS / Adres Girişi)
 st.subheader("📍 Konum Bilgileri")
-alinan_nokta = st.text_input("Alınan Konteyner Noktası (Adres / Konum)", key="alinan_nokta_input")
-birakilan_nokta = st.text_input("Bırakılan Konteyner Noktası (Adres / Konum)", key="birakilan_nokta_input")
+st.info("💡 İpucu: Mobilden girerken telefonunuzun konum servisinin açık olduğundan emin olun.")
+
+alinan_nokta = st.text_input("Alınan Konteyner Noktası (Adres / GPS Koordinat)", key="alinan_nokta_input")
+birakilan_nokta = st.text_input("Bırakılan Konteyner Noktası (Adres / GPS Koordinat)", key="birakilan_nokta_input")
 
 notlar = st.text_area("Notlar", key="notlar_input")
 
@@ -64,7 +66,7 @@ if st.button("Kaydet ve Gönder", key="kaydet_butonu"):
         tarih_str = islem_tarihi.strftime("%Y-%m-%d")
         foto_adi = foto.name if foto is not None else "Fotoğraf Yok"
         
-        # 📌 GÜNCELLENEN SÜTUN SIRALAMASI:
+        # 📌 SÜTUN SIRALAMASI:
         # A: Tarih | B: Personel | C: Konteyner Cinsi | D: İşlem Türü 
         # E: Alınan Nokta | F: Bırakılan Nokta | G: Fotoğraf | H: Notlar
         yeni_satir = [
