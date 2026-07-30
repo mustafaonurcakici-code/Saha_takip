@@ -2,6 +2,7 @@ import streamlit as st
 import gspread
 from google.oauth2 import service_account
 from datetime import datetime
+import streamlit.components.v1 as components
 
 # Sayfa Yapılandırması
 st.set_page_config(page_title="Saha Operasyon ve Konteyner Takip Paneli", page_icon="🚛")
@@ -46,9 +47,48 @@ islem_turu = st.selectbox(
     key="islem_turu_secim"
 )
 
-# 📍 Konum Bilgileri (Kararlı ve hatasız metin/adres girişi)
+# 📍 Konum Bilgileri ve GPS / Konum Alma Çözümü
 st.subheader("📍 Konum Bilgileri")
-alinan_nokta = st.text_input("Alınan Konteyner Noktası (Adres / Konum Tarifi)", key="alinan_nokta_input")
+st.info("💡 Mobilde adres yazmak yerine tarayıcınızın konum özelliğini kullanabilirsiniz.")
+
+# Tarayıcı konumunu otomatik çeken akıllı buton bileşeni
+location_js = """
+<div>
+    <button onclick="getLocation()" style="background-color:#FF4B4B; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; width:100%;">
+        📍 Telefonun Anlık Konumunu Al (GPS)
+    </button>
+    <p id="demo" style="margin-top:5px; font-size:14px; color:gray;"></p>
+    <script>
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else { 
+            document.getElementById("demo").innerHTML = "Tarayıcınız konumu desteklemiyor.";
+        }
+    }
+    function showPosition(position) {
+        let coords = "Enlem: " + position.coords.latitude.toFixed(6) + ", Boylam: " + position.coords.longitude.toFixed(6);
+        document.getElementById("demo").innerHTML = "Konum Alındı! Lütfen bunu aşağıdaki kutuya kopyalayın: <b>" + coords + "</b>";
+    }
+    function showError(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                alert("Konum izni reddedildi. Lütfen tarayıcı ayarlarından izin verin.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                alert("Konum bilgisi alınamıyor.");
+                break;
+            case error.TIMEOUT:
+                alert("İstek zaman aşımına uğradı.");
+                break;
+        }
+    }
+    </script>
+</div>
+"""
+components.html(location_js, height=110)
+
+alinan_nokta = st.text_input("Alınan Konteyner Noktası (Adres / Yukarıdan Konumu Kopyala)", key="alinan_nokta_input")
 birakilan_nokta = st.text_input("Bırakılan Konteyner Noktası (Adres / Konum Tarifi)", key="birakilan_nokta_input")
 
 notlar = st.text_area("Notlar", key="notlar_input")
